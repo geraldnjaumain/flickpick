@@ -9,15 +9,16 @@ const adBlockParams = '&adblock=1&nopop=1&noads=1&block_ads=true&popup=0&adsbloc
 
 export const streamingSources: StreamingSource[] = [
   {
-    name: 'VidSrc',
+    name: 'VidSrc Me',
     getUrl: (tmdbId, type, season, episode) => {
-      const baseUrl = `https://vidsrc.to/embed/${type}/${tmdbId}`;
+      const baseUrl = `https://vidsrc.me/embed/${type}?tmdb=${tmdbId}&autoplay=1${adBlockParams}`;
       if (type === 'tv' && season && episode) {
-        return `${baseUrl}/${season}/${episode}?autoplay=1${adBlockParams}`;
+        return `${baseUrl}&season=${season}&episode=${episode}`;
       }
-      return `${baseUrl}?autoplay=1${adBlockParams}`;
+      return baseUrl;
     }
   },
+
   {
     name: 'VidSrc Pro',
     getUrl: (tmdbId, type, season, episode) => {
@@ -28,16 +29,7 @@ export const streamingSources: StreamingSource[] = [
       return `${baseUrl}?autoplay=1${adBlockParams}`;
     }
   },
-  {
-    name: 'VidSrc Me',
-    getUrl: (tmdbId, type, season, episode) => {
-      const baseUrl = `https://vidsrc.me/embed/${type}?tmdb=${tmdbId}&autoplay=1${adBlockParams}`;
-      if (type === 'tv' && season && episode) {
-        return `${baseUrl}&season=${season}&episode=${episode}`;
-      }
-      return baseUrl;
-    }
-  },
+  
   {
     name: 'MoviesAPI',
     getUrl: (tmdbId, type, season, episode) => {
@@ -105,9 +97,20 @@ export const streamingSources: StreamingSource[] = [
       }
       return `https://www.dbgo.fun/movie/${tmdbId}?autoplay=1${adBlockParams}`;
     }
+  },
+   {
+    name: 'VidSrc',
+    getUrl: (tmdbId, type, season, episode) => {
+      const baseUrl = `https://vidsrc.to/embed/${type}/${tmdbId}`;
+      if (type === 'tv' && season && episode) {
+        return `${baseUrl}/${season}/${episode}?autoplay=1${adBlockParams}`;
+      }
+      return `${baseUrl}?autoplay=1${adBlockParams}`;
+    }
   }
-];
 
+];
+ 
 export const getStreamingUrl = (
   tmdbId: number, 
   type: 'movie' | 'tv', 

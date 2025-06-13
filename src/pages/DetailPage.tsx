@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -19,6 +18,7 @@ const DetailPage = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const { user, addToWatchlist, removeFromWatchlist, isInWatchlist } = useAuth();
   const { toast } = useToast();
+  const playerRef = useRef<HTMLDivElement>(null);
 
   // Determine type from the current route
   const type = location.pathname.startsWith('/movie/') ? 'movie' : 'tv';
@@ -98,6 +98,13 @@ const DetailPage = () => {
         description: `${title} has been added to your watchlist.`,
       });
     }
+  };
+
+  const handleWatchClick = () => {
+    playerRef.current?.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'center'
+    });
   };
 
   if (loading) {
@@ -202,7 +209,10 @@ const DetailPage = () => {
               
               <div className="flex gap-2 md:gap-4">
                 <Button 
-                  onClick={handleWatch}
+                  onClick={() => {
+                  handleWatch();
+                  window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+                  }}
                   size="sm"
                   className="bg-primary hover:bg-primary/90 px-3 md:px-8 text-xs md:text-base"
                 >
@@ -241,11 +251,13 @@ const DetailPage = () => {
         {isPlaying && (
           <div className="bg-card py-4 md:py-8">
             <div className="container mx-auto px-3 md:px-4">
-              <VideoPlayer
-                title={title}
-                tmdbId={content.id}
-                type={type}
-              />
+              <div ref={playerRef}>
+                <VideoPlayer
+                  title={title}
+                  tmdbId={content.id}
+                  type={type}
+                />
+              </div>
             </div>
           </div>
         )}
